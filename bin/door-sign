@@ -58,20 +58,14 @@ end
 # Get the events
 events = events_now
 
+# Time for backlight and is at work purposes
+now = Time.now.in_time_zone("London")
+
 # Are there more than one going on at the same time?
-if events.length > 1
+if events.length != 0
 
-  # Yes, so pick one depending on the time
-  if Time.now.min.odd?
-    event = events[0]
-  else
-    event = events[1]
-  end
-
-elsif events.length == 1
-
-  # No, just one, so pick that
-  event = events.first
+  # Yes, pick one entirely at random
+  event = events.sample
 
 end
 
@@ -80,8 +74,13 @@ if event
   # Yes, so build the payload with "|" between each part
   payload = "Alex is at:|#{event[:event].title}|#{event[:event].location}|(#{event[:cal]} Calendar)"
 else
-  # No, so say we're not busy
-  payload = "Alex is currently| | Not busy| "
+  if now.hour >= 18 or now.hour <= 9
+    payload = "Alex is not at work, check back at 9!"
+  else 
+    # No, so say we're not busy
+    payload = "Alex is currently| | Not busy| "
+
+  end
 end
 
 # Initalise the core
@@ -90,10 +89,7 @@ core = RubySpark::Core.new(ENV['SPARK_ID'], ENV['SPARK_TOKEN'])
 # Send the text to the core
 core.function("update", payload)
 
-# Figure out whether the backlight should be on or off
-now = Time.now.in_time_zone("London")
-
-# Compare them
+# Compare them for backlight
 if now.hour >= 22 or now.hour <= 7
 
   # Turn it off at night
