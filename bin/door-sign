@@ -6,6 +6,7 @@ require 'ruby_spark'
 require 'active_support/all'
 
 # Array of Google Calendar Names to check
+# TODO: Customize for my calendar
 CALENDARS = {
   'School' => 'alexforey.com_pkbcsa4uk7jtog8tkj65hndpn8@group.calendar.google.com',
   'Home' => 'alexforey.com_g0l2pjg9tbevhr066glf4ub6mc@group.calendar.google.com',
@@ -59,7 +60,7 @@ end
 events = events_now
 
 # Time for backlight and is at work purposes
-now = Time.now.in_time_zone("London")
+now = Time.now.in_time_zone("New York")
 
 # Are there more than one going on at the same time?
 if events.length != 0
@@ -72,13 +73,13 @@ end
 # Did we end up with an event?
 if event
   # Yes, so build the payload with "|" between each part
-  payload = "Alex is at:|#{event[:event].title}|#{event[:event].location}|(#{event[:cal]} Calendar)"
+  payload = "Chris is at:|#{event[:event].title}|#{event[:event].location}|(#{event[:cal]} Calendar)"
 else
   if now.hour >= 18 or now.hour <= 9
-    payload = "Alex is not at work, check back at 9!"
+    payload = "Chris is not at work, check back at 9!"
   else 
     # No, so say we're not busy
-    payload = "Alex is currently| | Not busy| "
+    payload = "Chris is currently| | Not busy| "
 
   end
 end
